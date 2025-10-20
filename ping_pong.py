@@ -1,4 +1,5 @@
 from pygame import *
+font.init()
 
 class GameSprite(sprite.Sprite):
     def __init__(self, image_object, speed_object_x, speed_object_y, xc, yc, w, h):
@@ -36,6 +37,10 @@ class Ball(GameSprite):
         if self.rect.y < 0 or self.rect.y > 600 - 70:
             self.speed_y *= -1
 
+font = font.Font(None, 35)
+lose_L = font.render("Player Left lose", True, (180, 0, 0))
+lose_R = font.render("Player Right lose", True, (180, 0, 0))
+
 window = display.set_mode((600, 600))
 clock = time.Clock()
 
@@ -46,13 +51,20 @@ ball = Ball("ball.png", 3, 3, 265, 265, 70, 70)
 game = True
 finish = False
 while game:
-    window.fill((150, 150, 250))
-    player_L.reset()
-    player_R.reset()
-    ball.reset()
-    player_L.updateL()
-    player_R.updateR()
-    ball.update(player_L, player_R)
+    if not finish:
+        window.fill((150, 150, 250))
+        player_L.reset()
+        player_R.reset()
+        ball.reset()
+        player_L.updateL()
+        player_R.updateR()
+        ball.update(player_L, player_R)
+        if ball.rect.x < 0:
+            finish = True
+            window.blit(lose_L, (200, 200))
+        if ball.rect.x > 530:
+            finish = True
+            window.blit(lose_R, (200, 200))
     for e in event.get():
         if e.type == QUIT:
             game = False
